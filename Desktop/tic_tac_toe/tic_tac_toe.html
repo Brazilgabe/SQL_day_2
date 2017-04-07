@@ -33,6 +33,7 @@
   <!-- HTML -->
 
     <div class='render-target'></div>
+    <p id="winnerParagraph"></p>
 
 
 <!-- js -->
@@ -40,6 +41,15 @@
 
 
     <script>
+
+// bugs/features:  "both" can win (first x then o)
+//                  store winners in gamestate object
+//                  append winners to DOM
+//
+//
+
+
+
     // players
       var gameState = {
         PLAYER_ONE: 'X',
@@ -53,23 +63,29 @@
 
       function checkForWinner(){
         var winningCombos = [
-          [0, 1, 2],
-          [3, 4, 5],
-          [6, 7, 8],
-          [0, 3, 6],
-          [1, 4, 7],
-          [2, 5, 8],
-          [0, 4, 8],
-          [2, 4, 6]
+          [0, 1, 2], // gives wrong winner after next move (delayed)
+          [3, 4, 5], // delayed
+          [6, 7, 8], //
+          [0, 3, 6], // no
+          [1, 4, 7], //
+          [2, 5, 8], //
+          [0, 4, 8],//
+          [2, 4, 6] //
         ]
 
         // set winner to false
         var winner = false
         // checking winning combos
         winningCombos.find(function(combo){
-          if(gameState.board[combo[0]] == gameState.board[combo[1]] && gameState.board[combo[1]] == gameState.board[combo[2]]){
-            winner = gameState.board[combo[0]]
-          }
+          // if((gameState.board[combo[0]] == gameState.board[combo[1]] && gameState.board[combo[1]] == gameState.board[combo[2]])){
+          //   winner = gameState.board[combo[0]]
+            if (gameState.board[combo[0]] + gameState.board[combo[1]] + gameState.board[combo[2]] === "XXX" ) {
+              winner = gameState.board[combo[0]]
+            } else if (gameState.board[combo[0]] + gameState.board[combo[1]] + gameState.board[combo[2]] === "OOO" ) {
+              winner = gameState.board[combo[0]]
+            }
+
+
         })
 
         return winner
@@ -81,12 +97,13 @@
           gameState.board[index] = gameState.currentPlayer
           gameState.currentPlayer = gameState.currentPlayer == gameState.PLAYER_ONE ? gameState.PLAYER_TWO : gameState.PLAYER_ONE
 
-          let winner = checkForWinner()
+          let winner = checkForWinner();
           if(winner){
-            alert(`${winner} is the winner!`)
-            gameState.gameWinner = winner
+            //alert(`${winner} is the winner!`)
+            document.querySelector('#winnerParagraph').innerText = `${winner} is the winner!`;
+            gameState.gameWinner = winner;
           }
-          render(gameState)
+          render(gameState);
         }
       }
 
